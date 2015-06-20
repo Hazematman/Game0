@@ -1,44 +1,58 @@
 HitBox = {}
 HitBox.__index = HitBox
 
+function subVec(v1, v2)
+	return({v1[1]-v2[1], v1[2]-v2[2], v1[3]-v2[3]})
+end
+
+function addVec(v1,v2)
+	return({v1[1]+v2[1], v1[2]+v2[2], v1[3]+v2[3]})
+end
+
+function rotate(p, angle)
+	return {p[1]*math.cos(angle) - p[2]*math.sin(angle),
+			p[1]*math.sin(angle) + p[2]*math.cos(angle)}
+end
+
+function Vector(x,y,z)
+	return {x,y,z}
+end
+
+function Dot(v1,v2)
+	return v1[1]*v2[1]+v1[2]*v2[2]+v1[3]*v2[3]
+end
+
+function Scalar(s,v)
+	return {s*v[1],s*v[2],s*v[3]}
+end
+
+function Normalize(v)
+	local mag = math.sqrt(Dot(v,v))
+	return {v[1]/mag, v[2]/mag, v[3]/mag} 
+end
+
 function HitBox.new(x1, y1, z1, x2, y2, z2)
 	local hb = {}
 	setmetatable(hb, HitBox)
 	
 	-- Set hitbox properties
-	hb.x1 = x1
-	hb.x2 = x2
-	hb.y1 = y1
-	hb.y2 = y2
-	hb.z1 = z1
-	hb.z2 = z2
+	hb.u = {Vector(1,0,0), Vector(0,1,0), Vector(0,0,1)}
+	hb.e = Vector((x2-x1)/2, (y2-y1)/2, (z2-z1)/2)
+	hb.c = Vector(x1+hb.e[1], y1+hb.e[2], z1+hb.e[3])
 	return hb
 end
 
 function HitBox:setPos(x, y, z)
-	local xsize = self.x2 - self.x1
-	local ysize = self.y2 - self.y1
-	local zsize = self.z2 - self.z1
-
-	self.x1 = x
-	self.x2 = x + xsize
-
-	self.y1 = y
-	self.y2 = y + ysize
-
-	self.z1 = z
-	self.z2 = z + zsize
+	self.c[1] = x+self.e[1]
+	self.c[2] = y+self.e[2]
+	self.c[3] = z+self.e[3]
 end
 
 function HitBox:checkCollision(box)
-	return self.x2 > box.x1 and
-	       self.x1 < box.x2 and
-		   self.y2 > box.y1 and
-		   self.y1 < box.y2 and
-		   self.z2 > box.z1 and
-		   self.z1 < box.z2
+	return testOBB(self, box)
 end
 
+-- TODO Change containsPoint and castRay to work with OBB
 function HitBox:containsPoint(x, y, z)
 	if x < self.x1 or x > self.x2 then
 		return false
@@ -140,4 +154,78 @@ end
 
 function HitMap:addBox(box)
 	table.insert(self.boxes, box)
+end
+
+epsilon = 5.96e-08 
+function testOBB(a,b)
+	local ra,rb = 0,0
+	local R = {Vector(1,0,0),Vector(0,1,0),Vector(0,0,1)}
+	local AbsR = {Vector(1,0,0),Vector(0,1,0),Vector(0,0,1)}
+
+	for i=1,3 do
+		for j=1,3 do
+			R[i][j] = Dot(a.u[i], b.u[j])
+		end
+	end
+
+	local t = subVec(b.c, a.c)
+	t = Vector(Dot(t, a.u[1]), Dot(t, a.u[2]), Dot(t, a.u[3]))
+
+	for i=1,3 do
+		for j=1,3 do
+			AbsR[i][j] = math.abs(R[i][j]) + epsilon
+		end
+	end
+
+	for i=1,3 do
+		ra = a.e[i]
+		rb = b.e[1]*AbsR[i][1] + b.e[2]*AbsR[i][2]+b.e[3]*AbsR[i][3]
+		if math.abs(t[i]) > ra + rb then return false end
+	end
+
+	for i=1,3 do
+		ra = a.e[1]*AbsR[1][i] + a.e[2]*AbsR[2][i] + a.e[3]*AbsR[3][i]
+		rb = b.e[i]
+		if math.abs(t[1]*R[1][i] + t[2]*R[2][i] + t[3]*R[3][i]) > ra+rb then
+			return false
+		end
+	end
+
+	ra = a.e[2]*AbsR[3][1] + a.e[3]*AbsR[2][1]
+	rb = b.e[2]*AbsR[1][3] + b.e[3]*AbsR[1][2]
+	if math.abs(t[3]*R[2][1] - t[2]*R[3][1]) > ra+rb then return 0 end
+
+	ra = a.e[2]*AbsR[3][2] + a.e[3]*AbsR[2][2]
+	rb = b.e[1]*AbsR[1][3] + b.e[3]*AbsR[1][1]
+	if math.abs(t[3]*R[2][2] - t[2]*R[3][1]) > ra+rb then return 0 end
+
+	ra = a.e[2]*AbsR[3][3] + a.e[3]*AbsR[2][3]
+	rb = b.e[1]*AbsR[1][2] + b.e[2]*AbsR[1][1]
+	if math.abs(t[3]*R[2][3] - t[2]*R[3][3]) > ra+rb then return 0 end
+
+	ra = a.e[1]*AbsR[3][1] + a.e[3]*AbsR[1][1]
+	rb = b.e[2]*AbsR[2][3] + b.e[3]*AbsR[2][2]
+	if math.abs(t[1]*R[3][1] - t[3]*R[1][1]) > ra+rb then return 0 end
+
+	ra = a.e[1]*AbsR[3][2] + a.e[3]*AbsR[1][2]
+	rb = b.e[1]*AbsR[2][3] + b.e[3]*AbsR[2][1]
+	if math.abs(t[1]*R[3][2] - t[3]*R[1][2]) > ra+rb then return 0 end
+
+	ra = a.e[1]*AbsR[3][3] + a.e[3]*AbsR[1][3]
+	rb = b.e[1]*AbsR[2][2] + b.e[2]*AbsR[2][1]
+	if math.abs(t[1]*R[3][3] - t[3]*R[1][2]) > ra+rb then return 0 end
+
+	ra = a.e[1]*AbsR[2][1] + a.e[2]*AbsR[1][1]
+	rb = b.e[1]*AbsR[3][3] + b.e[3]*AbsR[3][2]
+	if math.abs(t[2]*R[1][1] - t[1]*R[2][1]) > ra+rb then return 0 end
+
+	ra = a.e[1]*AbsR[2][2] + a.e[2]*AbsR[1][2]
+	rb = b.e[1]*AbsR[3][3] + b.e[3]*AbsR[3][1]
+	if math.abs(t[2]*R[1][2] - t[1]*R[2][2]) > ra+rb then return 0 end
+
+	ra = a.e[1]*AbsR[2][3] + a.e[2]*AbsR[1][3]
+	rb = b.e[1]*AbsR[3][2] + b.e[2]*AbsR[3][1]
+	if math.abs(t[2]*R[1][3] - t[1]*R[2][3]) > ra+rb then return 0 end
+
+	return true
 end
