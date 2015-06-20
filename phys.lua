@@ -65,3 +65,7 @@ function HitMap:containsPoint(x, y, z)
 	end
 	return false
 end
+
+function HitMap:addBox(box)
+	table.insert(self.boxes, box)
+end
