@@ -15,9 +15,3 @@ function makeWindow()
 							 { centered = true } )
 	end
 end
-
-
-function returnPlayerPosOnWindow() 
-	local width, height = love.window.getDimensions()
-	return width / 2, height / 2
-end

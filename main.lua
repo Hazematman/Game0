@@ -12,7 +12,7 @@ function love.load()
 	level:makeBuildings()
 	level:makeBuildings( { { 20, 30, 20, 30, 1 } } )
 	ai = Ai.new()
-	player = Player.new( returnPlayerPosOnWindow() )
+	player = Player.new()
 	player:setPos(10,10)
 end
 
@@ -39,7 +39,13 @@ end
 function love.draw()
 	local x,y = love.window.getDimensions()
 	love.graphics.origin()
-	love.graphics.translate( -player.x + x/2-16, -player.y +y/2-16)
+	mouseX, mouseY = love.mouse.getPosition()
+	mouseX = mouseX - x/2 
+	mouseY = mouseY - y/2 
+	angle = math.atan2(mouseY, mouseX)
+	xMag = math.cos( angle ) * 200
+	yMag = math.sin( angle ) * 200
+	love.graphics.translate( -player.x + x/2 - xMag, -player.y +y/2 - yMag)
 	level:draw()
 	ai:draw()
 	player:draw()
