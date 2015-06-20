@@ -51,6 +51,63 @@ function HitBox:containsPoint(x, y, z)
 	return true
 end
 
+-- Implemented from http://stackoverflow.com/a/3235902 
+function HitBox:castRay(x1,y1,z1,x2,y2,z2)
+	if x2 < self.x1 and x1 < self.x1 then return false end
+	if x2 > self.x2 and x1 > self.x2 then return false end
+	if y2 < self.y1 and y1 < self.y1 then return false end
+	if y2 > self.y2 and y1 > self.y2 then return false end
+	if z2 < self.z1 and z1 < self.z1 then return false end
+	if z2 > self.z1 and z1 > self.z2 then return false end
+	if x1 > self.x1 and x1 < self.x2 and
+		y1 > self.y1 and y1 < self.y2 and
+		z1 > self.z1 and z1 < self.z2 then
+
+		return true,x1,x2,z1
+	end
+
+	hit = {0,0,0}
+	if getIntersection(x1 - self.x1, x2 - self.x1, x1,y1,z1, x2,y2,z2, hit) and
+		inBox(hit[1],hit[2],hit[3], self.x1, self.y1, self.z1, self.x2,self.y2,self.z2, 1) or
+		getIntersection(y1 - self.y1, y2 - self.y1, x1,y1,z1, x2,y2,z2, hit) and
+		inBox(hit[1],hit[2],hit[3], self.x1, self.y1, self.z1, self.x2,self.y2,self.z2, 2) or
+		getIntersection(z1 - self.z1, z2 - self.z1, x1,y1,z1, x2,y2,z2, hit) and
+		inBox(hit[1],hit[2],hit[3], self.x1, self.y1, self.z1, self.x2,self.y2,self.z2, 3) or
+		getIntersection(x1 - self.x2, x2 - self.x2, x1,y1,z1, x2,y2,z2, hit) and
+		inBox(hit[1],hit[2],hit[3], self.x1, self.y1, self.z1, self.x2,self.y2,self.z2, 1) or
+		getIntersection(y1 - self.y2, y2 - self.y2, x1,y1,z1, x2,y2,z2, hit) and
+		inBox(hit[1],hit[2],hit[3], self.x1, self.y1, self.z1, self.x2,self.y2,self.z2, 2) or
+		getIntersection(z1 - self.z2, z2 - self.z2, x1,y1,z1, x2,y2,z2, hit) and
+		inBox(hit[1],hit[2],hit[3], self.x1, self.y1, self.z1, self.x2,self.y2,self.z2, 3) then
+
+		return true,hit[1],hit[2],hit[3]
+	end
+	return false
+end
+
+function getIntersection(fDist1, fDist2, x1,y1,z1, x2,y2,z2, hit)
+	if (fDist1 * fDist2) >= 0 then return false end
+	if (fDist1 == fDist2) then return false end
+	local scale = (-fDist1)/(fDist2-fDist1)
+	hit[1] = x1 + (x2-x1)*scale
+	hit[2] = y1 + (y2-y1)*scale
+	hit[3] = z1 + (z2-z1)*scale
+	return true
+end
+
+function inBox(x1,y1,z1, x2,y2,z2, x3,y3,z3, axis)
+	if axis == 1 and z1 > z2 and z1 < z3 and y1 > y2 and y1 < y3 then
+		return true
+	end
+	if axis == 2 and z1 > z2 and z1 < z3 and x1 > x2 and x1 < x3 then
+		return true
+	end
+	if axis == 3 and x1 > x2 and x1 < x3 and y1 > y2 and y1 < y3 then
+		return true
+	end
+	return false
+end
+
 -- A Hit Map contains a list of hit boxes and handles collision inside them
 HitMap = {}
 HitMap.__index = HitMap
