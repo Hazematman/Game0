@@ -53,7 +53,7 @@ function Level:makeBuildings( buildings )
 			   or j == 1 or j == self.x
 			then 
 			   level.tiles[ (i - 1)*self.x + j ] = 1
-			   wall = HitBox.new( (j - 1)*til, (i - 1)*til, 0, j*til - 1, i*til - 1, 
+			   wall = HitBox.new( (j - 1)*til, (i - 1)*til, 0, j*til, i*til, 
 				  layerHeight * self.layers )
 			   self.hitmap:addBox( wall )				  
 			end
@@ -67,7 +67,7 @@ function Level:makeBuildings( buildings )
 				  or j == v[ 3 ] or j == (v[ 3 ] + v[ 4 ])
 			   then  
 				  level.tiles[ (i - 1)*self.x + j ] = 1
-				  wall = HitBox.new( (j - 1)*til, (i - 1)*til, 0, j*til - 1, i*til - 1, 
+				  wall = HitBox.new( (j - 1)*til, (i - 1)*til, 0, j*til, i*til, 
 					 layerHeight * v[ 5 ] )
 				  self.hitmap:addBox( wall )
 			   end
