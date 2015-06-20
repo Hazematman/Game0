@@ -1,3 +1,4 @@
+require("window")
 require("ai")
 require("player")
 require("level")
@@ -6,11 +7,12 @@ speed = 100
 
 -- All Initilization code goes here
 function love.load()
+	makeWindow()
 	level = Level.new()
 	level:makeBuildings()
 	level:makeBuildings( { { 20, 30, 20, 30, 1 } } )
 	ai = Ai.new()
-	player = Player.new()
+	player = Player.new( returnPlayerPosOnWindow() )
 	player:setPos(10,10)
 end
 

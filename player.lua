@@ -5,7 +5,7 @@ Player.__index = Player
 
 playerSize = 32
 
-function Player.new()
+function Player.new( xOnWindow, yOnWindow )
 	local p = {}
 	setmetatable(p, Player)
 
@@ -19,6 +19,9 @@ function Player.new()
 	p.vely = 0
 
 	p.hitbox = HitBox.new(0, 0, 0, playerSize, playerSize, layerHeight)
+
+	p.xOnWindow = xOnWindow
+	p.yOnWindow = yOnWindow
 
 	return p
 end
@@ -46,5 +49,6 @@ end
 function Player:draw()
 	love.graphics.origin()
 	love.graphics.setColor(255, 255, 255)
-	love.graphics.rectangle("fill", 400, 300, 32, 32)
+	love.graphics.rectangle("fill", self.xOnWindow - playerSize, self.yOnWindow - playerSize, 
+							playerSize, playerSize)
 end
