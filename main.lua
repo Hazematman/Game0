@@ -6,15 +6,21 @@ speed = 100
 
 -- All Initilization code goes here
 function love.load()
-   level = Level.new()
-   level:makeBuildings()
-   level:makeBuildings( { { 20, 30, 20, 30, 1 } } )
+	level = Level.new()
+	level:makeBuildings()
+	level:makeBuildings( { { 20, 30, 20, 30, 1 } } )
 	ai = Ai.new()
-	player = Player.new( 100, 100 )
+	player = Player.new()
+	player:setPos(10,10)
 end
 
 function love.update(delta)
 	player:update(delta)
+
+	-- Do player physics
+	if level.hitmap:checkCollision(player.hitbox) then
+		player:resetPos()
+	end
 end
 
 function love.draw()

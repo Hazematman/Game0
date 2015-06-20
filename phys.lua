@@ -15,6 +15,21 @@ function HitBox.new(x1, y1, z1, x2, y2, z2)
 	return hb
 end
 
+function HitBox:setPos(x, y, z)
+	local xsize = self.x2 - self.x1
+	local ysize = self.y2 - self.y1
+	local zsize = self.z2 - self.z1
+
+	self.x1 = x
+	self.x2 = x + xsize
+
+	self.y1 = y
+	self.y2 = y + ysize
+
+	self.z1 = z
+	self.z2 = z + zsize
+end
+
 function HitBox:checkCollision(box)
 	return self.x2 > box.x1 and
 	       self.x1 < box.x2 and
