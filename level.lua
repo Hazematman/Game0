@@ -13,8 +13,8 @@ function Level.new( x, y, layers )
    local level = {}
    setmetatable( level, Level )
    
-   level.x = x or 150
-   level.y = y or 200
+   level.x = x or 180
+   level.y = y or 150
    level.tiles = {}
    for i = 1, level.x * level.y do
 	  level.tiles[ i ] = 0
@@ -30,7 +30,7 @@ end
 function Level:draw()
    for i = 1, self.y do
 	  for j = 1, self.x do
-		 cur_tile = self.y * (i - 1) + j
+		 cur_tile = self.x * (i - 1) + j
 		 if self.tiles[ cur_tile ] == 0 then
 			love.graphics.setColor( 84, 84, 84 ) 
 			love.graphics.rectangle("fill", til * (j - 1), til * (i - 1), til, til )
@@ -60,8 +60,8 @@ function Level:makeBuildings( buildings )
 	  end
    else
 	  for k,v in ipairs( buildings ) do
-		 for i = v[ 1 ], v[ 1 ]+v[ 2 ] do
-			for j = v[ 3 ], v[ 3 ]+v[ 4 ] do
+		 for i = v[ 1 ], v[ 1 ]+v[ 2 ]-1 do
+			for j = v[ 3 ], v[ 3 ]+v[ 4 ]-1 do
 			   if i == v[ 1 ] or i == (v[ 1 ] + v[ 2 ] - 1)
 				  or j == v[ 3 ] or j == (v[ 3 ] + v[ 4 ] - 1)
 			   then  

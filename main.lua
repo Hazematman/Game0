@@ -1,10 +1,14 @@
 require("ai")
 require("player")
+require("level")
 
 speed = 100
 
 -- All Initilization code goes here
 function love.load()
+   level = Level.new()
+   level:makeBuildings()
+   level:makeBuildings( { { 20, 30, 20, 30, 1 } } )
 	ai = Ai.new()
 	player = Player.new()
 end
@@ -15,6 +19,7 @@ end
 
 function love.draw()
 	love.graphics.print("Go Kosmotron!", 200, 200)
+	level:draw()
 	ai:draw()
 	player:draw()
 end
