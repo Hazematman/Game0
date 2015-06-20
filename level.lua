@@ -27,9 +27,7 @@ function Level.new( x, y, layers )
 end
 
 
-function Level:draw( pl_x, pl_y )
-	love.graphics.origin()
-	love.graphics.translate( -pl_x, -pl_y )
+function Level:draw()
 	for i = 1, self.y do
 		for j = 1, self.x do
 			cur_tile = self.x * (i - 1) + j

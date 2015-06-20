@@ -38,8 +38,10 @@ function love.update(delta)
 end
 
 function love.draw()
-	love.graphics.print("Go Kosmotron!", 200, 200)
-	level:draw( player.x, player.y )
+	local x,y = love.window.getDimensions()
+	love.graphics.origin()
+	love.graphics.translate( -player.x + x/2-16, -player.y +y/2-16)
+	level:draw()
 	ai:draw()
 	player:draw()
 end

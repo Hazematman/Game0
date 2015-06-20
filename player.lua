@@ -47,8 +47,7 @@ function Player:update(delta)
 end
 
 function Player:draw()
-	love.graphics.origin()
 	love.graphics.setColor(255, 255, 255)
-	love.graphics.rectangle("fill", self.xOnWindow - playerSize, self.yOnWindow - playerSize, 
+	love.graphics.rectangle("fill", self.x, self.y, 
 							playerSize, playerSize)
 end
