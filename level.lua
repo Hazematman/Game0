@@ -4,7 +4,7 @@ Level = {}
 Level.__index = Level
 
 -- Constants
-til = 4 --tile size
+til = 8 --tile size
 layerHeight = 10
 
 
@@ -45,7 +45,8 @@ end
 
 -- buildings array to pass in looks like { {y, y-size, x, x-size, layers}, ... }
 function Level:makeBuildings( buildings )
-   if buidlings == nil then 
+   if buildings == nil then 
+	  print("doing nil building")
 	  for i = 1, self.y do
 		 for j = 1, self.x do
 			if i == 1 or i == self.y
@@ -60,10 +61,10 @@ function Level:makeBuildings( buildings )
 	  end
    else
 	  for k,v in ipairs( buildings ) do
-		 for i = v[ 1 ], v[ 1 ]+v[ 2 ]-1 do
-			for j = v[ 3 ], v[ 3 ]+v[ 4 ]-1 do
-			   if i == v[ 1 ] or i == (v[ 1 ] + v[ 2 ] - 1)
-				  or j == v[ 3 ] or j == (v[ 3 ] + v[ 4 ] - 1)
+		 for i = v[ 1 ], v[ 1 ]+v[ 2 ] do
+			for j = v[ 3 ], v[ 3 ]+v[ 4 ] do
+			   if i == v[ 1 ] or i == (v[ 1 ] + v[ 2 ])
+				  or j == v[ 3 ] or j == (v[ 3 ] + v[ 4 ])
 			   then  
 				  level.tiles[ (i - 1)*self.x + j ] = 1
 				  wall = HitBox.new( (j - 1)*til, (i - 1)*til, 0, j*til - 1, i*til - 1, 
