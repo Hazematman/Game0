@@ -10,7 +10,7 @@ function love.load()
    level:makeBuildings()
    level:makeBuildings( { { 20, 30, 20, 30, 1 } } )
 	ai = Ai.new()
-	player = Player.new()
+	player = Player.new( 100, 100 )
 end
 
 function love.update(delta)
@@ -19,7 +19,7 @@ end
 
 function love.draw()
 	love.graphics.print("Go Kosmotron!", 200, 200)
-	level:draw()
+	level:draw( player.x, player.y )
 	ai:draw()
 	player:draw()
 end

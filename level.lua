@@ -27,7 +27,9 @@ function Level.new( x, y, layers )
 end
 
 
-function Level:draw()
+function Level:draw( pl_x, pl_y )
+   love.graphics.origin()
+   love.graphics.translate( pl_x, pl_y )
    for i = 1, self.y do
 	  for j = 1, self.x do
 		 cur_tile = self.x * (i - 1) + j
@@ -46,7 +48,6 @@ end
 -- buildings array to pass in looks like { {y, y-size, x, x-size, layers}, ... }
 function Level:makeBuildings( buildings )
    if buildings == nil then 
-	  print("doing nil building")
 	  for i = 1, self.y do
 		 for j = 1, self.x do
 			if i == 1 or i == self.y

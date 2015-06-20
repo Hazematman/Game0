@@ -1,12 +1,12 @@
 Player = {}
 Player.__index = Player
 
-function Player.new()
+function Player.new( spawn_x, spawn_y )
 	local p = {}
 	setmetatable(p, Player)
 
-	p.x = 0
-	p.y = 0
+	p.x = spawn_x
+	p.y = spawn_y
 
 	p.velx = 0
 	p.vely = 0
