@@ -26,7 +26,6 @@ function love.update(delta)
 		local oldy = player.oldy
 		local newx = player.x
 		local newy = player.y
-		player:resetPos()
 		player:setPos(oldx, newy)
 		if level.hitmap:checkCollision(player.hitbox) then
 			player.vely = 0
