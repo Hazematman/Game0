@@ -36,14 +36,15 @@ function love.update(delta)
 	end
 end
 
+
 function love.draw()
-	local x,y = love.window.getDimensions()
 	love.graphics.origin()
+	x,y = love.window.getDimensions()
 	mouseX, mouseY = love.mouse.getPosition()
 	mouseX = mouseX - x/2 
-	mouseY = mouseY - y/2 
-	angle = math.atan2(mouseY, mouseX)
-	xMag = math.cos( angle ) * 200
+	mouseY = mouseY - y/2
+	angle = math.atan2(mouseY + (yMag or 0), mouseX + (xMag or 0))
+	xMag = math.cos( angle ) * 250
 	yMag = math.sin( angle ) * 200
 	love.graphics.translate( -player.x + x/2 - xMag, -player.y +y/2 - yMag)
 	level:draw()
