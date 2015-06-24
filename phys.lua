@@ -42,6 +42,18 @@ function HitBox.new(x1, y1, z1, x2, y2, z2)
 	return hb
 end
 
+function HitBox:setRot(angle)
+	local cos = math.cos(angle)
+	local sin = math.sin(angle)
+	hb.u[1][1] = cos
+	hb.u[1][2] = sin
+	hb.u[1][3] = 0
+
+	hb.u[2][1] = -sin
+	hb.u[2][2] = cos
+	hb.u[2][3] = 0
+end
+
 function HitBox:setPos(x, y, z)
 	self.c[1] = x+self.e[1]
 	self.c[2] = y+self.e[2]
@@ -51,6 +63,19 @@ end
 function HitBox:checkCollision(box)
 	return testOBB(self, box)
 end
+
+function HitBox:draw()
+	local xDir = Scalar(b1.e[1],b1.u[1])
+	local yDir = Scalar(b1.e[2],b1.u[2])
+	
+	local p1 = addVec(yDir, subVec(b1.c, xDir))
+	local p2 = addVec(yDir, addVec(b1.c, xDir))
+	local p3 = subVec(addVec(b1.c, xDir), yDir)
+	local p4 = subVec(subVec(b1.c, xDir), yDir)
+
+	love.graphics.polygon("fill", p1[1],p1[2],p2[1],p2[2],p3[1],p3[2],p4[1],p4[2])
+end
+
 
 -- TODO Change containsPoint and castRay to work with OBB
 function HitBox:containsPoint(x, y, z)
