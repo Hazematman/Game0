@@ -45,13 +45,13 @@ end
 function HitBox:setRot(angle)
 	local cos = math.cos(angle)
 	local sin = math.sin(angle)
-	hb.u[1][1] = cos
-	hb.u[1][2] = sin
-	hb.u[1][3] = 0
+	self.u[1][1] = cos
+	self.u[1][2] = sin
+	self.u[1][3] = 0
 
-	hb.u[2][1] = -sin
-	hb.u[2][2] = cos
-	hb.u[2][3] = 0
+	self.u[2][1] = -sin
+	self.u[2][2] = cos
+	self.u[2][3] = 0
 end
 
 function HitBox:setPos(x, y, z)
@@ -65,8 +65,8 @@ function HitBox:checkCollision(box)
 end
 
 function HitBox:draw()
-	local xDir = Scalar(b1.e[1],b1.u[1])
-	local yDir = Scalar(b1.e[2],b1.u[2])
+	local xDir = Scalar(self.e[1],self.u[1])
+	local yDir = Scalar(self.e[2],self.u[2])
 	
 	local p1 = addVec(yDir, subVec(b1.c, xDir))
 	local p2 = addVec(yDir, addVec(b1.c, xDir))
